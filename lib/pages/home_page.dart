@@ -10,60 +10,79 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: BlocBuilder<ProductBloc, ProductState>(
-          builder: (context, state) {
-            if (state is ProductFetched) {
-              List<ProductModel> products = state.products;
-              return ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: products.length,
-                itemBuilder: (context, index) {
-                  return Container(
-                    width: MediaQuery.of(context).size.width / 2,
-                    height: 100,
-                    decoration: BoxDecoration(
-                      color: Colors.red,
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                    child: Column(
-                      children: [
-                        Container(
-                          margin: EdgeInsets.all(5),
-                          width: MediaQuery.of(context).size.width / 2,
-                          height: 200,
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                                image: NetworkImage(products[index].imageUrl),
-                                fit: BoxFit.cover),
-                          ),
-                        ),
-                        Container(
-                          alignment: Alignment.centerLeft,
-                          padding: EdgeInsets.all(5),
-                          child: Column(
-                            children: [
-                              Text(
-                                products[index].nama,
-                                textAlign: TextAlign.start,
+        child: Column(
+          children: [
+            Container(
+              height: 130,
+              width: MediaQuery.of(context).size.width,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10), color: Colors.green),
+            ),
+            SingleChildScrollView(
+              child: Row(
+                children: [
+                  BlocBuilder<ProductBloc, ProductState>(
+                    builder: (context, state) {
+                      if (state is ProductFetched) {
+                        List<ProductModel> products = state.products;
+                        return ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: products.length,
+                          itemBuilder: (context, index) {
+                            print(products[index].imageUrl);
+                            return Container(
+                              margin: EdgeInsets.all(5),
+                              padding: EdgeInsets.all(5),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                boxShadow: [
+                                  BoxShadow(
+                                    blurRadius: 12,
+                                    offset: Offset(4, 4),
+                                    color: Colors.grey.withOpacity(0.5),
+                                  ),
+                                ],
+                                borderRadius: BorderRadius.circular(10),
                               ),
-                              Text(
-                                products[index].harga.toString(),
-                                textAlign: TextAlign.start,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    height: 140,
+                                    width: 200,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.only(
+                                        topRight: Radius.circular(10),
+                                        topLeft: Radius.circular(10),
+                                      ),
+                                      image: DecorationImage(
+                                          image: NetworkImage(
+                                              products[index].imageUrl),
+                                          fit: BoxFit.cover),
+                                    ),
+                                  ),
+                                  Text(
+                                    products[index].nama,
+                                  ),
+                                  Text(
+                                    products[index].harga.toString(),
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
-                  );
-                },
-              );
-            } else if (state is ProductFetchFailed) {
-              return Text(state.message);
-            } else {
-              return CircularProgressIndicator();
-            }
-          },
+                            );
+                          },
+                        );
+                      } else if (state is ProductFetchFailed) {
+                        return Text(state.message);
+                      } else {
+                        return CircularProgressIndicator();
+                      }
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );
